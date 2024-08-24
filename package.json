@@ -11,7 +11,7 @@
     "build:go": "cd ./go && go build -o ../dist/nats-nest .",
     "build:js": "rimraf ./dist && tsc",
     "build:types": "tsc -d --declarationDir dist --emitDeclarationOnly",
-    "build": "pnpm run build:js && pnpm run build:go",
+    "build": "pnpm run build:js && pnpm run build:types && pnpm run build:go",
     "dev": "go run ./main.go --host 127.0.0.1",
     "prepublishOnly": "pnpm run build",
     "test": "exit 0"
