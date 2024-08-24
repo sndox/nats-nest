@@ -8,7 +8,10 @@
     "access": "public"
   },
   "scripts": {
-    "build": "go build -o ./dist/nats-nest .",
+    "build:go": "cd ./go && go build -o ../dist/nats-nest .",
+    "build:js": "rimraf ./dist && tsc",
+    "build:types": "tsc -d --declarationDir dist --emitDeclarationOnly",
+    "build": "pnpm run build:js && pnpm run build:go",
     "dev": "go run ./main.go --host 127.0.0.1",
     "prepublishOnly": "pnpm run build",
     "test": "exit 0"
@@ -29,6 +32,25 @@
   ],
   "license": "MIT",
   "devDependencies": {
+    "rimraf": "^6.0.1",
+    "tsx": "^4.17.0",
     "typescript": "^5.5.4"
+  },
+  "prettier": {
+    "printWidth": 80,
+    "tabWidth": 2,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "bracketSpacing": true,
+    "useTabs": false,
+    "endOfLine": "auto",
+    "singleAttributePerLine": false,
+    "bracketSameLine": false,
+    "jsxSingleQuote": false,
+    "quoteProps": "as-needed",
+    "semi": false
+  },
+  "dependencies": {
+    "execa": "^9.3.1"
   }
 }

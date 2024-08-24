@@ -1,6 +1,6 @@
 # `nats-nest`
 
-`nats-nest` is a thin wrapper around an embedded NATS server in a Go module.
+`nats-nest` is a thin wrapper around an embedded NATS server in a Go module. A server can be started through the command-line or using the `NatsServer` class, which basically just invokes the `nats-server` executable.
 
 ## Installation
 
@@ -14,6 +14,27 @@ A NATS server can be started like so:
 
 ```bash
 npx nats-nest
+```
+
+## `NatsServer` Usage
+
+A `NatsServer` class can also be used to start a server.
+
+```typescript
+import { NatsServer } from 'nats-nest'
+
+const server = new NatsServer()
+
+// The options are optional
+await server.start({
+  host: '127.0.0.1',
+  port: 4222,
+  name: 'NATS_Server',
+  jetstream: true,
+})
+
+// Stopping the server
+await server.stop()
 ```
 
 ### Configuration Options
