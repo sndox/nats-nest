@@ -1,5 +1,6 @@
 import { execa, type Options, type ResultPromise } from 'execa'
-import type { ServerConfig } from './types.js'
+import { kebabCase } from 'string-ts'
+import type { ServerOptions } from './types.js'
 
 const defaultOpts: Options = {
   stdout: ['pipe', 'inherit'],
@@ -11,10 +12,10 @@ const defaultOpts: Options = {
 }
 
 export class NatsServer {
-  args: ServerConfig
+  private args: ServerOptions
   private subprocess?: ResultPromise
 
-  constructor(args?: ServerConfig) {
+  constructor(args?: ServerOptions) {
     this.args = args ?? {}
   }
 
@@ -53,11 +54,11 @@ export class NatsServer {
     return this.subprocess?.kill()
   }
 
-  private getArgs() {
+  getArgs() {
     const args: string[] = []
 
     for (const [key, val] of Object.entries(this.args)) {
-      args.push(`--${key}`)
+      args.push(`--${kebabCase(key)}`)
 
       // This is to exclude args with `true` as `--${flagName}` is enough to enable a setting
       // But also need to pass in `false` so that settings that are enabled by default can be disabled
@@ -68,7 +69,7 @@ export class NatsServer {
         continue
       }
 
-      args.push(`${val}`)
+      args.push(val)
     }
 
     return args

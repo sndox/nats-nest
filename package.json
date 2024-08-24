@@ -54,6 +54,7 @@
     "semi": false
   },
   "dependencies": {
-    "execa": "^9.3.1"
+    "execa": "^9.3.1",
+    "string-ts": "^2.2.0"
   }
 }

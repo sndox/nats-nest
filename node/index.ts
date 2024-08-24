@@ -1,3 +1,3 @@
 export { NatsServer } from './server.js'
 
-export type { ServerConfig } from './types.js'
+export type { ServerOptions } from './types.js'
