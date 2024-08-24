@@ -2,55 +2,55 @@ import { execa, type Options, type ResultPromise } from 'execa'
 import type { ServerConfig } from './types.js'
 
 const defaultOpts: Options = {
-  stdout: 'inherit',
+  stdout: ['pipe', 'inherit'],
   stderr: 'inherit',
   forceKillAfterDelay: false,
   reject: false,
   preferLocal: true,
+  env: { FORCE_COLOR: 'true' },
 }
 
 export class NatsServer {
   args: ServerConfig
-  private process?: ResultPromise
+  private subprocess?: ResultPromise
 
   constructor(args?: ServerConfig) {
     this.args = args ?? {}
   }
 
+  /**
+   * Starts the server and will resolve the promise once it is ready.
+   */
   async start(opts?: Options) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise((resolve, reject) => {
       const args = this.getArgs()
 
-      const process = execa('nats-nest', args, {
+      const subprocess = execa('nats-nest', args, {
         ...defaultOpts,
         ...opts,
       })
 
-      this.process = process
+      this.subprocess = subprocess
 
-      process.on('spawn', () => {
-        if (process.pid) {
-          resolve(process.pid)
-        } else {
-          // probably not needed?
-          reject()
+      subprocess.stdout?.on('data', (data) => {
+        if (Buffer.isBuffer(data)) {
+          const str = data.toString()
+
+          if (str.includes('Server is ready')) {
+            resolve(subprocess.pid)
+          }
         }
       })
 
-      process.on('error', (err: any) => reject(err))
+      subprocess.on('error', (err: any) => reject(err))
     })
   }
 
   /**
    * Stops the server by sending a signal to the `nats-server` instance.
-   * This returns false when the signal could not be sent, for example when the subprocess has already exited.
    */
   async stop() {
-    if (!this.process) {
-      return
-    }
-
-    return this.process.kill()
+    return this.subprocess?.kill()
   }
 
   private getArgs() {

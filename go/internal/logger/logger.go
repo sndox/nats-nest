@@ -4,6 +4,7 @@ import (
 	"os"
 
 	"github.com/charmbracelet/log"
+	"github.com/muesli/termenv"
 )
 
 type Logger struct {
@@ -12,6 +13,12 @@ type Logger struct {
 
 func NewLogger() *Logger {
 	logger := log.New(os.Stdout)
+
+	forceColor := os.Getenv("FORCE_COLOR")
+
+	if forceColor != "" {
+		logger.SetColorProfile(termenv.TrueColor)
+	}
 
 	return &Logger{logger: logger}
 }

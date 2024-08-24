@@ -5,6 +5,7 @@ go 1.23.0
 require (
 	github.com/alexflint/go-arg v1.5.1
 	github.com/charmbracelet/log v0.4.0
+	github.com/muesli/termenv v0.15.2
 	github.com/nats-io/nats-server/v2 v2.10.18
 )
 
@@ -19,7 +20,6 @@ require (
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/minio/highwayhash v1.0.3 // indirect
 	github.com/muesli/reflow v0.3.0 // indirect
-	github.com/muesli/termenv v0.15.2 // indirect
 	github.com/nats-io/jwt/v2 v2.5.8 // indirect
 	github.com/nats-io/nkeys v0.4.7 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect
