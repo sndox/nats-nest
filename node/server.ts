@@ -12,12 +12,14 @@ export class NatsServer {
   async start(opts?: Options) {
     const args = this.getArgs()
     const defaultOpts: Options = {
-      stdio: 'inherit',
+      stdout: 'inherit',
+      stderr: 'inherit',
       forceKillAfterDelay: false,
       reject: false,
+      preferLocal: true,
     }
 
-    this.process = execa({ ...defaultOpts, ...opts })`./dist/nats-nest ${args}`
+    this.process = execa({ ...defaultOpts, ...opts })`nats-nest ${args}`
     return this.process
   }
 
