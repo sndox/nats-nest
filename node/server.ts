@@ -1,5 +1,5 @@
 import { execa, type Options, type ResultPromise } from 'execa'
-import type { ServerConfig } from './types'
+import type { ServerConfig } from './types.js'
 
 export class NatsServer {
   args: ServerConfig
