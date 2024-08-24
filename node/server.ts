@@ -1,6 +1,14 @@
 import { execa, type Options, type ResultPromise } from 'execa'
 import type { ServerConfig } from './types.js'
 
+const defaultOpts: Options = {
+  stdout: 'inherit',
+  stderr: 'inherit',
+  forceKillAfterDelay: false,
+  reject: false,
+  preferLocal: true,
+}
+
 export class NatsServer {
   args: ServerConfig
   private process?: ResultPromise
@@ -10,17 +18,27 @@ export class NatsServer {
   }
 
   async start(opts?: Options) {
-    const args = this.getArgs()
-    const defaultOpts: Options = {
-      stdout: 'inherit',
-      stderr: 'inherit',
-      forceKillAfterDelay: false,
-      reject: false,
-      preferLocal: true,
-    }
+    return new Promise(async (resolve, reject) => {
+      const args = this.getArgs()
 
-    this.process = execa({ ...defaultOpts, ...opts })`nats-nest ${args}`
-    return this.process
+      const process = execa('nats-nest', args, {
+        ...defaultOpts,
+        ...opts,
+      })
+
+      this.process = process
+
+      process.on('spawn', () => {
+        if (process.pid) {
+          resolve(process.pid)
+        } else {
+          // probably not needed?
+          reject()
+        }
+      })
+
+      process.on('error', (err: any) => reject(err))
+    })
   }
 
   /**
