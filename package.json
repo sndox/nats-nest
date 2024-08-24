@@ -16,6 +16,8 @@
     "prepublishOnly": "pnpm run build",
     "test": "exit 0"
   },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "packageManager": "pnpm@8.14.2",
   "repository": {
     "url": "https://github.com/sndox/nats-nest.git"
