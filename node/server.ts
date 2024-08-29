@@ -25,7 +25,6 @@ export class NatsServer {
   async start(opts?: Options) {
     return new Promise((resolve, reject) => {
       const args = this.getArgs()
-
       const subprocess = execa('nats-nest', args, {
         ...defaultOpts,
         ...opts,
@@ -58,6 +57,10 @@ export class NatsServer {
     const args: string[] = []
 
     for (const [key, val] of Object.entries(this.args)) {
+      if (typeof val === 'undefined') {
+        continue
+      }
+
       args.push(`--${kebabCase(key)}`)
 
       // This is to exclude args with `true` as `--${flagName}` is enough to enable a setting
