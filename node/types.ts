@@ -203,3 +203,83 @@ export interface ServerOptions {
    */
   config?: string
 }
+
+export interface ServerInfo {
+  server_id: string
+  server_name: string
+  version: string
+  proto: number
+  git_commit: string
+  go: string
+  host: string
+  port: number
+  max_connections: number
+  ping_interval: number
+  ping_max: number
+  http_host: string
+  http_port: number
+  http_base_path: string
+  https_port: number
+  auth_timeout: number
+  max_control_line: number
+  max_payload: number
+  max_pending: number
+  cluster: Cluster
+  gateway: Gateway
+  leaf: Leaf
+  mqtt: Mqtt
+  websocket: Websocket
+  jetstream: Jetstream
+  tls_timeout: number
+  write_deadline: number
+  start: string
+  now: string
+  uptime: string
+  mem: number
+  cores: number
+  gomaxprocs: number
+  cpu: number
+  connections: number
+  total_connections: number
+  routes: number
+  remotes: number
+  leafnodes: number
+  in_msgs: number
+  out_msgs: number
+  in_bytes: number
+  out_bytes: number
+  slow_consumers: number
+  subscriptions: number
+  http_req_stats: HttpReqStats
+  config_load_time: string
+  system_account: string
+  slow_consumer_stats: SlowConsumerStats
+}
+
+export interface Cluster {}
+
+export interface Gateway {}
+
+export interface Leaf {}
+
+export interface Mqtt {}
+
+export interface Websocket {}
+
+export interface Jetstream {}
+
+export interface HttpReqStats {
+  '/': number
+  '/connz': number
+  '/gatewayz': number
+  '/routez': number
+  '/subsz': number
+  '/varz': number
+}
+
+export interface SlowConsumerStats {
+  clients: number
+  routes: number
+  gateways: number
+  leafs: number
+}

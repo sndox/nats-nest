@@ -14,6 +14,6 @@
     "outDir": "./dist",
     "verbatimModuleSyntax": true
   },
-  "include": ["./node", "./dev"],
+  "include": ["node/**/*", "./dev"],
   "exclude": ["./dev"]
 }
