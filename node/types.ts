@@ -199,9 +199,31 @@ export interface ServerOptions {
   pidFile?: string
 
   /**
-   * Path to configuration file
+   * The server will accept websocket client connections on this hostname/IP.
+   * @default 127.0.0.1
    */
-  config?: string
+  websocketHost?: string
+  /**
+   * The server will accept websocket client connections on this port.
+   */
+  websocketPort?: number
+  /**
+   * By default the server will enforce the use of TLS. If no TLS configuration is provided, you need to explicitly set NoTLS to true to allow the server to start without TLS configuration.
+   * Note that if a TLS configuration is present, this boolean is ignored and the server will run the Websocket server with that TLS configuration.
+   * Running without TLS is less secure since Websocket clients that use bearer tokens will send them in clear. So this should not be used in production.
+   * @default false
+   */
+  websocketNoTLS?: boolean
+  /**
+   * If set to true, the server will negotiate with clients if compression can be used.
+   * If this is false, no compression will be used (both in server and clients) since it has to be negotiated between both endpoints
+   */
+  websocketCompression?: boolean
+  /**
+   * Total time allowed for the server to read the client request and write the response back to the client.
+   * This include the time needed for the TLS Handshake.
+   */
+  websocketHandshakeTimeout?: number
 }
 
 export interface ServerInfo {

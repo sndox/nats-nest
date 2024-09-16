@@ -16,10 +16,8 @@ type Args struct {
 	HTTPSPort    int    `arg:"--https-port,env:NATS_NEST_HTTPS_PORT" help:"HTTPS port for monitoring dashboard (exclusive of --httpx_port)"`
 	HTTPBasePath string `arg:"--http-base-path" help:"Base path for HTTP monitoring endpoints"`
 
-	Name       string `arg:"-n,--name,env:NATS_NEST_NAME" help:"Server name"`
-	PidFile    string `arg:"-P,--pid,env:NATS_NEST_PID" help:"File to write the server's PID"`
-	ConfigFile string `arg:"-c,--config,env:NATS_NEST_CONFIG" help:"Path to configuration file"`
-
+	Name    string `arg:"-n,--name,env:NATS_NEST_NAME" help:"Server name"`
+	PidFile string `arg:"-P,--pid,env:NATS_NEST_PID" help:"File to write the server's PID"`
 	// Logging
 	LogFile string `arg:"-l,--log" help:"File to redirect log output"`
 	NoLog   bool   `arg:"--no-log,env:NATS_NEST_NO_LOG" help:"Disable logging"`
@@ -57,14 +55,20 @@ type Args struct {
 	WriteDeadline    time.Duration `arg:"--write-deadline" help:"Write deadline duration"`
 	MaxClosedClients int           `arg:"--max-closed-clients" help:"Maximum number of closed clients to track"`
 
-	LameDuckDuration       time.Duration `arg:"--lame-duck-duration" help:"Duration for graceful shutdown during lame duck mode"`
-	LameDuckGracePeriod    time.Duration `arg:"--lame-duck-grace-period" help:"Grace period for lame duck mode"`
-	MaxTracedMsgLen        int           `arg:"--max-traced-msg-len" help:"Maximum printable length for traced messages"`
-	AlwaysEnableNonce      bool          `arg:"--always-enable-nonce" help:"Always present a nonce to new connections"`
-	CheckConfig            bool          `arg:"--check-config" help:"Check configuration file syntax and exit"`
-	DisableJetStreamBanner bool          `arg:"--disable-jet-stream-banner" help:"Disable JetStream startup banner"`
-	ConnectErrorReports    int           `arg:"--connect-error-reports" help:"Number of failed connection attempts before reporting an error"`
-	ReconnectErrorReports  int           `arg:"--reconnect-error-reports" help:"Number of failed reconnection attempts before reporting an error"`
+	LameDuckDuration    time.Duration `arg:"--lame-duck-duration" help:"Duration for graceful shutdown during lame duck mode"`
+	LameDuckGracePeriod time.Duration `arg:"--lame-duck-grace-period" help:"Grace period for lame duck mode"`
+	MaxTracedMsgLen     int           `arg:"--max-traced-msg-len" help:"Maximum printable length for traced messages"`
+	AlwaysEnableNonce   bool          `arg:"--always-enable-nonce" help:"Always present a nonce to new connections"`
+	// CheckConfig            bool          `arg:"--check-config" help:"Check configuration file syntax and exit"`
+	DisableJetStreamBanner bool `arg:"--disable-jet-stream-banner" help:"Disable JetStream startup banner"`
+	ConnectErrorReports    int  `arg:"--connect-error-reports" help:"Number of failed connection attempts before reporting an error"`
+	ReconnectErrorReports  int  `arg:"--reconnect-error-reports" help:"Number of failed reconnection attempts before reporting an error"`
+
+	WebsocketHost             string `arg:"--websocket-host" default:"127.0.0.1"`
+	WebsocketPort             int    `arg:"--websocket-port"`
+	WebsocketNoTLS            bool   `arg:"--websocket-no-tls" help:"set NoTLS to true to allow the server to start without TLS configuration."`
+	WebsocketCompression      bool   `arg:"--websocket-compression" help:"If set to true, the server will negotiate with clients if compression can be used. If this is false, no compression will be used (both in server and clients) since it has to be negotiated between both endpoints"`
+	WebsocketHandshakeTimeout int64  `arg:"--websocket-handshake-timeout" help:"Total time allowed for the server to read the client request and write the response back to the client. This include the time needed for the TLS Handshake."`
 }
 
 func (args Args) Version() string {
@@ -83,7 +87,6 @@ func main() {
 		HTTPSPort:                 args.HTTPSPort,
 		HTTPBasePath:              args.HTTPBasePath,
 		PidFile:                   args.PidFile,
-		ConfigFile:                args.ConfigFile,
 		LogFile:                   args.LogFile,
 		NoLog:                     args.NoLog,
 		Debug:                     args.Debug,
@@ -116,10 +119,16 @@ func main() {
 		LameDuckGracePeriod:       args.LameDuckGracePeriod,
 		MaxTracedMsgLen:           args.MaxTracedMsgLen,
 		AlwaysEnableNonce:         args.AlwaysEnableNonce,
-		CheckConfig:               args.CheckConfig,
 		DisableJetStreamBanner:    args.DisableJetStreamBanner,
 		ConnectErrorReports:       args.ConnectErrorReports,
 		ReconnectErrorReports:     args.ReconnectErrorReports,
+		Websocket: server.WebsocketOpts{
+			Port:             args.WebsocketPort,
+			Host:             args.WebsocketHost,
+			NoTLS:            args.WebsocketNoTLS,
+			Compression:      args.WebsocketCompression,
+			HandshakeTimeout: time.Duration(args.WebsocketHandshakeTimeout),
+		},
 	}
 
 	s, err := server.NewServer(opts)
